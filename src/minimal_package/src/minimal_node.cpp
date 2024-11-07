@@ -33,7 +33,7 @@ void MinimalNode::_timer_callback()
 int main(int argc, char ** argv)
 {
     rclcpp::init(argc,argv);
-    auto node = MinimalNode::make_shared("minimal_node");
+    auto node = std::make_shared<MinimalNode>("minimal_node");
 
     rclcpp::spin(node);
 
