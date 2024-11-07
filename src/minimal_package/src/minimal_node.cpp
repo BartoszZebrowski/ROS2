@@ -17,7 +17,10 @@ class MinimalNode : public rclcpp::Node
 
 MinimalNode::MinimalNode(const char* node_name) : Node(node_name)
 {
-    _timer = this->create_wall_timer(std::chrono::milliseconds(1000),
+    this->declare_parameter("period", 1000);
+    int period = this->get_parameter("period").as_int();
+
+    _timer = this->create_wall_timer(std::chrono::milliseconds(period),
                                      std::bind(&MinimalNode::_timer_callback, this)); 
 }
 
@@ -25,9 +28,6 @@ void MinimalNode::_timer_callback()
 {
     RCLCPP_INFO(this->get_logger(), "Test hello world");
 }
-
-//   git config --global user.email "b.zebrowski16@wp.pl"
-//   git config --global user.name "Bartosz Zebrowski"
 
 //=============================================================
 int main(int argc, char ** argv)

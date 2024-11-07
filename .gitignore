@@ -1,3 +1,15 @@
 log/
 install/
 build/
+
+src/my_first_package/build
+src/my_first_package/install
+src/my_first_package/log
+
+src/minimal_package/build
+src/minimal_package/install
+src/minimal_package/log
+
+src/pubsub_demo/build
+src/pubsub_demo/install
+src/pubsub_demo/log
