@@ -1,0 +1,10 @@
+/home/bartek/Desktop/ROS2/tutorial_workspace/build/minimal_package/CMakeFiles/uninstall.dir
+/home/bartek/Desktop/ROS2/tutorial_workspace/build/minimal_package/CMakeFiles/minimal_package_uninstall.dir
+/home/bartek/Desktop/ROS2/tutorial_workspace/build/minimal_package/CMakeFiles/minimal_node.dir
+/home/bartek/Desktop/ROS2/tutorial_workspace/build/minimal_package/CMakeFiles/test.dir
+/home/bartek/Desktop/ROS2/tutorial_workspace/build/minimal_package/CMakeFiles/edit_cache.dir
+/home/bartek/Desktop/ROS2/tutorial_workspace/build/minimal_package/CMakeFiles/rebuild_cache.dir
+/home/bartek/Desktop/ROS2/tutorial_workspace/build/minimal_package/CMakeFiles/list_install_components.dir
+/home/bartek/Desktop/ROS2/tutorial_workspace/build/minimal_package/CMakeFiles/install.dir
+/home/bartek/Desktop/ROS2/tutorial_workspace/build/minimal_package/CMakeFiles/install/local.dir
+/home/bartek/Desktop/ROS2/tutorial_workspace/build/minimal_package/CMakeFiles/install/strip.dir

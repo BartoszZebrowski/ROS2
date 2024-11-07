@@ -26,7 +26,8 @@ void MinimalNode::_timer_callback()
     RCLCPP_INFO(this->get_logger(), "Test hello world");
 }
 
-
+//   git config --global user.email "b.zebrowski16@wp.pl"
+//   git config --global user.name "Bartosz Zebrowski"
 
 //=============================================================
 int main(int argc, char ** argv)
