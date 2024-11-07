@@ -8,7 +8,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(stdmsgs REQUIRED)
+find_package(std_msgs REQUIRED)
 
 add_executable(small_publisher src/small_publisher.cpp)
 target_include_directories(small_publisher PUBLIC
@@ -18,10 +18,23 @@ target_compile_features(small_publisher PUBLIC c_std_99 cxx_std_17)  # Require C
 ament_target_dependencies(
   small_publisher
   "rclcpp"
-  "stdmsgs"
+  "std_msgs"
 )
 
-install(TARGETS small_publisher
+add_executable(small_subscriber src/small_subscriber.cpp)
+target_include_directories(small_subscriber PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
+target_compile_features(small_subscriber PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+ament_target_dependencies(
+  small_subscriber
+  "rclcpp"
+  "std_msgs"
+)
+
+
+
+install(TARGETS small_publisher small_subscriber
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
