@@ -13,3 +13,7 @@ src/minimal_package/log
 src/pubsub_demo/build
 src/pubsub_demo/install
 src/pubsub_demo/log
+
+src/fake_sensors/build
+src/fake_sensors/install
+src/fake_sensors/log
