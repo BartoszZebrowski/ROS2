@@ -10,15 +10,6 @@
 
 #include "sensor_msgs/msg/laser_scan.hpp"
 
-
-// Fałszywy lidar powinien wczytywać dane odczytów z pliku CSV, ilość odczytów na pełny skan powinna odpowiadać
-// ilości kolumn w pliku CSV. Pozostałe elementy konfiguracji lidaru powinny być ustawiane jako parametry ROS2.
-// Jeżeli w pliku CSV znajdą się odczyty przekraczające zakres ustalony w parametrach odczyt taki nie powinien zostać opublikowany
-// a węzeł powinien zalogować o tym informacje na poziomie ERROR.
-// Dodatkowo należy umożliwić dodanie szumu Gaussowskiego gdzie wartość oczekiwana to zawsze zero a odchylenie standardowe podawane jest jako parametr ROS2. W przypadku odchylenia zero nie należy wcale dodawać szumu.
-
-
-
 class FakeLidar: public rclcpp::Node
 {
     public:
@@ -31,22 +22,21 @@ class FakeLidar: public rclcpp::Node
         rclcpp::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr _scan_publisher;
         rclcpp::TimerBase::SharedPtr _scan_timer;
 
-        // std::default_random_engine generator;
-        // std::normal_distribution<double> dist(mean, stddev);
-
     private:
         void _publish_fake_scan();
         bool _ranges_are_in_range(const std::vector<float>& ranges, float min, float max);
-
+        std::vector<float> _add_gausian_noise(const std::vector<float>& ranges, float standard_deviation);
 };
 
 FakeLidar::FakeLidar() : Node("fake_lidar")
 {
-    _fakeLidarFileReader = std::make_unique<FakeLidarFileReader>("/home/bartek/Desktop/ROS2/tutorial_workspace/src/fake_sensors/data/fake_lidar_readings.csv", this);
-
+    
     _config.declare_parameters(this);
     _config.update_parameters(this);
     _config.print_config(this);
+
+    //_fakeLidarFileReader = std::make_unique<FakeLidarFileReader>("/home/bartek/Desktop/ROS2/tutorial_workspace/src/fake_sensors/data/fake_lidar_readings.csv", this);
+    _fakeLidarFileReader = std::make_unique<FakeLidarFileReader>(_config.fake_data_file_path, this);
 
     _scan_publisher = this->create_publisher<sensor_msgs::msg::LaserScan>("scan",10);
 
@@ -67,8 +57,8 @@ void FakeLidar::_publish_fake_scan()
     msg.angle_max = _config.angle.second;
     msg.range_min = _config.range.first;
     msg.range_max = _config.range.second;
-    msg.angle_increment = _config.get_scan_step();
     msg.time_increment = 0;
+    msg.angle_increment = _config.get_scan_step();
     msg.scan_time = _config.get_scan_period_ms()/1000.0;
 
     auto ranges = _fakeLidarFileReader->get_next_fake_reading();
@@ -79,22 +69,42 @@ void FakeLidar::_publish_fake_scan()
         return;
     }
 
-
-
-    msg.ranges = ranges;
+    msg.ranges = _add_gausian_noise(ranges, _config.noise_level);
 
     _scan_publisher->publish(msg);
 }
 
-bool FakeLidar::_ranges_are_in_range(const std::vector<float>& ranges, float min, float max){
-    return std::any_of(ranges.begin(), ranges.end(), [min, max](float val) {
-        return val < min && val > max;
-    });
+bool FakeLidar::_ranges_are_in_range(const std::vector<float>& ranges, float min, float max)
+{
+    for (const auto& range : ranges) {
+        if (range < min || range > max) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
-//=================================================================================================
-//                                          MAIN 
-//=================================================================================================
+std::vector<float> FakeLidar::_add_gausian_noise(const std::vector<float>& ranges, float standard_deviation)
+{
+    std::vector<float> noisy_ranges = ranges;
+
+    if(standard_deviation == 0.0f)
+        return noisy_ranges;
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::normal_distribution<float> dist(0.0, standard_deviation);
+
+    for (auto& val : noisy_ranges) {
+        val += dist(gen);
+    }
+
+    return noisy_ranges;
+}
+
+
+
 int main(int argc, char **argv)
 {
     rclcpp::init(argc,argv);
